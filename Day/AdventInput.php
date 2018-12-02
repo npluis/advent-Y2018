@@ -24,13 +24,21 @@ class AdventInput
         $this->day = $day;
     }
 
-    public function getInput()
+    public function getInput($asArray = true)
     {
         $file = './cache/day'.$this->day.'.txt';
         if (!file_exists($file)) {
             file_put_contents($file, file_get_contents(self::URL.$this->day.'/input'));
         }
 
-        return file_get_contents($file);
+        $input = file_get_contents($file);
+        if ($asArray) {
+            //test for , since its used in the examples
+            $sepChar = strpos($input, ",") !== false ? "," : "\n";
+
+            return explode($sepChar, trim($input));
+        }
+
+        return $input;
     }
 }

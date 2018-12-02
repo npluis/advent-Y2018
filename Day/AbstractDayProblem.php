@@ -40,7 +40,7 @@ abstract class AbstractDayProblem
 
     public function run()
     {
-        $input = trim($this->input->getInput());
+        $input = $this->input->getInput();
         $time = microtime(true);
         $this->answer1 = $this->solve($input);
         $this->timer[1] = (microtime(true) - $time);
@@ -50,9 +50,9 @@ abstract class AbstractDayProblem
         $this->timer[2] = (microtime(true) - $time);
     }
 
-    abstract public function solve(string $input);
+    abstract public function solve(array $input);
 
-    abstract public function solve2(string $input);
+    abstract public function solve2(array $input);
 
     public function printAnswers()
     {

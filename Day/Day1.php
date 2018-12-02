@@ -13,21 +13,17 @@ class Day1 extends AbstractDayProblem
 
     protected $day = 1;
 
-    public function solve(string $input)
+    public function solve(array $input)
     {
-        $sepChar = strpos($input, ",") !== false ? "," : "\n";
-
-        return array_sum(explode($sepChar, $input));
+        return array_sum($input);
     }
 
-    public function solve2(string $input)
+    public function solve2(array $input)
     {
-        $sepChar = strpos($input, ",") !== false ? "," : "\n";
-        $array = explode($sepChar, $input);
         $result = 0;
         $freqs[$result] = 0;
         while (true) {
-            foreach ($array as $num) {
+            foreach ($input as $num) {
                 $result += $num;
                 if (isset($freqs[$result])) {
                     //found twice

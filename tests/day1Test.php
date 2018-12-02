@@ -34,7 +34,7 @@ class Day1Test extends TestCase
     public function testInput($input, $expected)
     {
         $problem = new Day1(1);
-        $answer = $problem->solve($input);
+        $answer = $problem->solve(explode(',',$input));
 
         $this->assertEquals($expected, $answer);
     }
@@ -59,7 +59,7 @@ class Day1Test extends TestCase
     public function testInput2($input, $expected)
     {
         $problem = new Day1(1);
-        $answer = $problem->solve2($input);
+        $answer = $problem->solve2(explode(',',$input));
 
         $this->assertEquals($expected, $answer);
     }
