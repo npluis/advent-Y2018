@@ -28,7 +28,7 @@ class Day2 extends AbstractDayProblem
 
     private function checksumBox(string $input)
     {
-        $chars = count_chars(trim($input));
+        $chars = count_chars(trim($input),1);
 
         return [in_array(2, $chars) ? 1 : 0, in_array(3, $chars) ? 1 : 0];
     }
