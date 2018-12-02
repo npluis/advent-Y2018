@@ -8,6 +8,8 @@
 
 namespace Advent\Y2018;
 
+use Advent\Y2018\Day\AbstractDayProblem;
+
 require 'vendor/autoload.php';
 
 $longopts = [
@@ -17,8 +19,7 @@ $options = getopt('', $longopts);
 
 
 $day = $options['day'];
-$class = 'Advent\Y2018\Day'.$day;
-$problem = new $class();
+$class = 'Advent\Y2018\Day\Day'.$day;
 
 if (!class_exists($class)) {
     throw new \Exception(sprintf('Can\'t find class for %d', $day));
@@ -32,10 +33,4 @@ if (!class_exists($class)) {
 $problem = new $class();
 $problem->run();
 
-echo "\nSOLVED 1\n";
-echo $problem->getAnswer(1);
-echo "\n\n";
-
-echo "\nSOLVED 2\n";
-echo $problem->getAnswer(2);
-echo "\n\n";
+$problem->printAnswers();

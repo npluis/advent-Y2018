@@ -6,8 +6,7 @@
  * Time: 14:20
  */
 
-namespace Advent\Y2018;
-
+namespace Advent\Y2018\Day;
 
 class AdventInput
 {

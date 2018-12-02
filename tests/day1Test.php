@@ -8,7 +8,7 @@
 
 namespace Advent\Y2018\Tests;
 
-use Advent\Y2018\Day1;
+use Advent\Y2018\Day\Day1;
 use PHPUnit\Framework\TestCase;
 
 class Day1Test extends TestCase
@@ -25,6 +25,9 @@ class Day1Test extends TestCase
     }
 
     /**
+     * @param $input
+     * @param $expected
+     *
      * @dataProvider inputData
      * @throws \Exception
      */
@@ -47,7 +50,10 @@ class Day1Test extends TestCase
     }
 
     /**
-     * @dataProvider inputData2
+     * @param $input
+     * @param $expected
+     *
+     *  * @dataProvider inputData2
      * @throws \Exception
      */
     public function testInput2($input, $expected)

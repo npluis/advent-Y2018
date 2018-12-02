@@ -6,7 +6,7 @@
  * Time: 14:19
  */
 
-namespace Advent\Y2018;
+namespace Advent\Y2018\Day;
 
 class Day1 extends AbstractDayProblem
 {
