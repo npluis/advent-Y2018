@@ -91,6 +91,20 @@ class Day2Test extends TestCase
                 ],
                 'fgij',
             ],
+            [
+                [
+                    'abcde',
+                    'fghij',
+                    'klmno',
+                    'pqrst',
+                    'fghka',
+                    'fguij',
+                    'axcye',
+                    'wvxyz',
+                ],
+                'fgij',
+            ],
+
         ];
     }
 
