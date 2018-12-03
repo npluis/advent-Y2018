@@ -33,8 +33,7 @@ class AdventInput
 
         $input = file_get_contents($file);
         if ($asArray) {
-            //test for , since its used in the examples
-            $sepChar = strpos($input, ",") !== false ? "," : "\n";
+            $sepChar = "\n";
 
             return explode($sepChar, trim($input));
         }
