@@ -102,6 +102,14 @@ class Claim
         }
     }
 
+    public function getnewFootPrint()
+    {
+        return array_fill_keys(
+            range($this->x, $this->x + $this->width-1),
+            array_fill_keys(range($this->y, $this->y + $this->height-1),$this->getId())
+        );
+    }
+
     /**
      * @return mixed
      */

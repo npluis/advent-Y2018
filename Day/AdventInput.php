@@ -34,7 +34,6 @@ class AdventInput
         $input = file_get_contents($file);
         if ($asArray) {
             $sepChar = "\n";
-
             return explode($sepChar, trim($input));
         }
 

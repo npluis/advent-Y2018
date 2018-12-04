@@ -20,12 +20,12 @@ class Day3Test extends TestCase
     public function testClaim()
     {
         $string = '#1 @ 2,3: 4x5';
-        $claim = new Claim($string);
-        $this->assertEquals(1, $claim->getId());
-        $this->assertEquals(2, $claim->getX());
-        $this->assertEquals(3, $claim->getY());
-        $this->assertEquals(4, $claim->getWidth());
-        $this->assertEquals(5, $claim->getHeight());
+        $claim1 = new Claim($string);
+        $this->assertEquals(1, $claim1->getId());
+        $this->assertEquals(2, $claim1->getX());
+        $this->assertEquals(3, $claim1->getY());
+        $this->assertEquals(4, $claim1->getWidth());
+        $this->assertEquals(5, $claim1->getHeight());
 
         $string = '#123 @ 3,2: 5x4';
         $claim = new Claim($string);
@@ -58,10 +58,34 @@ class Day3Test extends TestCase
             '7,5' => 1,
         ];
 
+print_r($claim->getnewFootPrint());
+print_r($claim1->getnewFootPrint());
+print_r($this->array_merge_recursive_new($claim->getnewFootPrint(), $claim1->getnewFootPrint()));die();
         foreach ($claim->getFootprint() as $coord) {
             $actual[$coord]=1;
         }
         $this->assertEquals($footprint, $actual);
+    }
+
+    /**
+     * Version of array_merge_recursive without overwriting numeric keys
+     *
+     * @param  array $array1 Initial array to merge.
+     * @param  array ...     Variable list of arrays to recursively merge.
+     *
+     * @link   http://www.php.net/manual/en/function.array-merge-recursive.php#106985
+     * @author Martyniuk Vasyl <martyniuk.vasyl@gmail.com>
+     */
+    public function array_merge_recursive_new()
+    {
+        $output = array();
+        foreach(func_get_args() as $array) {
+            foreach($array as $key => $value) {
+                $output[$key] = isset($output[$key]) ?
+                    $this->array_merge_recursive_new($output[$key], $value) : $value;
+            }
+        }
+        return $output;
     }
 
     public function inputData()

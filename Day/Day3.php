@@ -25,51 +25,66 @@ class Day3 extends AbstractDayProblem
     public function solve(array $input)
     {
         $this->parseInput($input);
+        $num = 0;
 
-        $filtered = array_filter(
-            $this->grid,
-            function ($coord) {
-                return count($coord) > 1;
+        print_r($this->grid);die();
+        foreach ($this->grid as $col=>$row) {
+            foreach ($row as $cell) {
+                print_r($col);
+                print_r($row);
+                print_r($cell);die();
+                if (count($cell) > 1) {
+                    $num++;
+                }
             }
-        );
+        }
 
-        return count($filtered);
+        return $num;
     }
 
     public function parseInput(array $input)
     {
+        $maxX=0;$maxY=0;
         foreach ($input as $claimString) {
-            if (strlen(trim($claimString)) === 0) {
-                continue;
-            }
             $claim = new Claim($claimString);
             $this->addClaimToGrid($claim);
+            $maxX = max($maxX, $claim->getX());
+            $maxY = max($maxY, $claim->getY());
+
+
         }
     }
 
     private function addClaimToGrid(Claim $claim)
     {
-        $this->claims[$claim->getId()] = $claim;
+
+        $this->grid = array_merge_recursive($this->grid, $claim->getnewFootPrint());
+        $claimId = $claim->getId();
+        $this->claims[$claimId] = $claim;
+
+
+        $collides=[];
 
         foreach ($claim->getFootprint() as $coord) {
-            if (!isset($this->grid[$coord])) {
-                $this->grid[$coord][$claim->getId()] = $claim;
-            } else {
-                //another claim here
-                //    echo "colliding ".$claim->getId()."\n";
-                $claim->setCollide(true);
+            if (isset($this->grid[$coord])) {
+                $collides+=$this->grid[$coord];
+            }
+            $this->grid[$coord][$claimId] = $claim;
+        }
 
-                foreach ($this->grid[$coord] as $otherClaim) {
-                    $otherClaim->setCollide(true);
-                    //         echo "colliding ".$otherClaim->getId()."\n";
-                }
-                $this->grid[$coord][$claim->getId()] = $claim;
+        if ($collides) {
+            foreach (array_keys($collides) as $claimId) {
+                $this->claims[$claimId]->setCollide(true);
+                $claim->setCollide(true);
             }
         }
     }
 
+
+
     public function solve2(array $input)
     {
+
 
         if (count($this->grid) === 0) {
             $this->parseInput($input);
@@ -81,8 +96,8 @@ class Day3 extends AbstractDayProblem
             }
         }
         if (count($possible) !== 1) {
-            print_r($possible);
-            throw new \Exception("more than one possible?");
+       //     print_r($possible);
+       //     throw new \Exception("more than one possible?");
         }
 
         return $possible[0]->getId();

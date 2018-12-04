@@ -35,12 +35,18 @@ abstract class AbstractDayProblem
         if ($day) {
             $this->day = $day;
         }
+
         $this->input = new AdventInput($this->day);
+
     }
 
     public function run()
     {
+        $time = microtime(true);
         $input = $this->input->getInput();
+        $this->timer['input'] = (microtime(true) - $time);
+
+
         $time = microtime(true);
         $this->answer1 = $this->solve($input);
         $this->timer[1] = (microtime(true) - $time);
@@ -59,9 +65,12 @@ abstract class AbstractDayProblem
         echo PHP_EOL;
         for ($d = 1; $d <= 2; $d++) {
             printf("\033[32m Problem %d:\033[0m %s ".PHP_EOL, $d, $this->getAnswer($d));
-            printf("\033[32m solved in :\033[0m %fms ".PHP_EOL.PHP_EOL, $this->timer[$d]*1000);
+            printf("\033[32m solved in :\033[0m %dms ".PHP_EOL.PHP_EOL, round($this->timer[$d]*1000,1));
             echo PHP_EOL;
         }
+        printf("\033[32m parse input in :\033[0m %dms ".PHP_EOL.PHP_EOL, round($this->timer['input']*1000,1));
+        echo PHP_EOL;
+        print_r($this->timer);
     }
 
     /**
