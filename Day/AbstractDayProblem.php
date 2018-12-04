@@ -44,6 +44,7 @@ abstract class AbstractDayProblem
     {
         $time = microtime(true);
         $input = $this->input->getInput();
+        $this->parseInput($input);
         $this->timer['input'] = (microtime(true) - $time);
 
 
@@ -59,6 +60,8 @@ abstract class AbstractDayProblem
     abstract public function solve(array $input);
 
     abstract public function solve2(array $input);
+
+    abstract public function parseInput(array $input);
 
     public function printAnswers()
     {

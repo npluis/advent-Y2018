@@ -27,7 +27,7 @@ class Day3 extends AbstractDayProblem
         $this->parseInput($input);
         $num = 0;
 
-        print_r($this->grid);die();
+
         foreach ($this->grid as $col=>$row) {
             foreach ($row as $cell) {
                 print_r($col);
@@ -96,8 +96,8 @@ class Day3 extends AbstractDayProblem
             }
         }
         if (count($possible) !== 1) {
-       //     print_r($possible);
-       //     throw new \Exception("more than one possible?");
+            print_r($possible);
+            throw new \Exception("more than one possible?");
         }
 
         return $possible[0]->getId();
