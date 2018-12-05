@@ -50,7 +50,6 @@ class GuardShift
 
         $this->interval = new \DateInterval('PT1M');
         $this->minutes = array_fill_keys(range(0, 59), 0);
-
     }
 
     public function addLog(GuardLog $log)
@@ -58,7 +57,7 @@ class GuardShift
         /**
          * @var Sleep $sleep
          */
-        $this->logs[] = $log;
+    //    $this->logs[] = $log;
 
         if ($log->getEvent() === GuardLog::EVENT_FALL_ASLEEP) {
             $this->currentSleep = new Sleep($log->getDate());
@@ -66,14 +65,16 @@ class GuardShift
             $this->currentSleep->setEnd($log->getDate());
             $this->sleep[] = $this->currentSleep;
             $this->totalSleep += $this->currentSleep->getDuration();
-            $period = new \DatePeriod($this->currentSleep->getStart(), $this->interval, $log->getDate());
-            foreach ($period as $minute) {
-                $this->minutes[(int)$minute->format('i')]++;
-            }
+            $this->calcMinutes();
         }
-
     }
 
+    private function calcMinutes() {
+        $period = new \DatePeriod($this->currentSleep->getStart(), $this->interval, $this->currentSleep->getEnd());
+        foreach ($period as $minute) {
+            $this->minutes[(int)$minute->format('i')]++;
+        }
+    }
     /**
      * @return array
      */
@@ -86,7 +87,8 @@ class GuardShift
     {
         arsort($this->minutes);
         $value = reset($this->minutes);
-        return [key($this->minutes)=>$value];
+
+        return [key($this->minutes) => $value];
     }
 
     /**

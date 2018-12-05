@@ -37,9 +37,14 @@ class GuardLog
      */
     public function __construct($string, $prevGuardId = null)
     {
-        $this->date = \DateTime::createFromFormat('Y-m-d H:i', substr($string, 1, 16), new \DateTimeZone('UTC'));
-        if (preg_match('/Guard #(\d*)?/', $string, $match)) {
-            $this->guard = (int)$match[1];
+        $this->date = \DateTime::createFromFormat(
+            'Y-m-d H:i',
+            substr($string, 1, 16),
+            new \DateTimeZone('UTC')
+        );
+        $pos = strpos($string, 'Guard #');
+        if ($pos !== false) {
+            $this->guard = (int)substr($string, $pos+7, strpos($string, ' ', $pos));
             $this->event = self::EVENT_START_SHIFT;
         } else {
             $this->guard = $prevGuardId;
@@ -52,8 +57,6 @@ class GuardLog
             }
         }
     }
-
-
 
 
     /**
