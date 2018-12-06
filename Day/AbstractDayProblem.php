@@ -69,11 +69,11 @@ abstract class AbstractDayProblem
         for ($d = 1; $d <= 2; $d++) {
             printf("\033[32m Problem %d:\033[0m %s ".PHP_EOL, $d, $this->getAnswer($d));
             printf("\033[32m solved in :\033[0m %dms ".PHP_EOL.PHP_EOL, round($this->timer[$d]*1000,1));
-            echo PHP_EOL;
+
         }
         printf("\033[32m parse input in :\033[0m %dms ".PHP_EOL.PHP_EOL, round($this->timer['input']*1000,1));
-        echo PHP_EOL;
-        print_r($this->timer);
+
+        printf("\033[32m Total time :\033[0m %dms ".PHP_EOL.PHP_EOL, round(array_sum($this->timer)*1000,1));
     }
 
     /**

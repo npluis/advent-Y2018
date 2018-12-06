@@ -15,28 +15,31 @@ class Day5 extends AbstractDayProblem
 
     private $pairs = [];
 
-
-
+    private $reacted;
 
     public function solve(array $input)
     {
         $string = $input[0];
 
-        return $this->reactLength($string);
-    }
 
-    private function reactLength($string)
-    {
+        return strlen($this->react_str_replace($string));
         return strlen($this->react($string));
     }
 
-    private function react($string)
+
+
+    private function react($string) : string
     {
+
+
+
         $pairs = $this->getPairs();
+        $count=0;
         do {
-            $orgLength = strlen($string);
-            $string = str_replace($pairs, '', $string);
-        } while ($orgLength > strlen($string));
+            //$orgLength = strlen($string);
+            $string = str_replace($pairs, '', $string, $count);
+        } while ($count>0);
+        $this->reacted = $string;
 
         return $string;
     }
@@ -60,18 +63,23 @@ class Day5 extends AbstractDayProblem
 
     public function solve2(array $input)
     {
-        $string = $input[0];
-
+        if ($this->reacted) {
+            $string = $this->reacted;
+        } else {
+            $string = $input[0];
+            $string = $this->react($string);
+        }
         $stats = array_fill_keys(range('a', 'z'), 0);
-        $string = $this->react($string);
-        $min=PHP_INT_MAX;
+
+        $min = PHP_INT_MAX;
         foreach (array_keys($stats) as $char) {
             $remainingString = str_replace([$char, strtoupper($char)], '', $string);
-            $length = $this->reactLength($remainingString);
-            if ($length<$min) {
+            $length = strlen($this->react($remainingString));
+            if ($length < $min) {
                 $min = $length;
             }
         }
+
         return $min;
     }
 

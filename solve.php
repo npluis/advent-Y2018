@@ -18,7 +18,8 @@ $longopts = [
 $options = getopt('', $longopts);
 
 
-$day = $options['day'];
+$day = $options['day'] ?? $_GET['day'] ?? null;
+
 $class = 'Advent\Y2018\Day\Day'.$day;
 
 if (!class_exists($class)) {
