@@ -60,6 +60,8 @@ class Coordinate
         return $this->numClose;
     }
 
+    private $zeroY=0;
+    private $zeroX=0;
 
     /**
      * Coordinate constructor.
@@ -73,6 +75,9 @@ class Coordinate
         $this->y = $y;
 
         $this->coord = $x.','.$y;
+
+        $this->zeroX = abs(0-$x);
+        $this->zeroY = abs (0-$y);
     }
 
 
@@ -104,8 +109,17 @@ class Coordinate
     }
 
 
+    public function xMultiplier($x) {
+        return $x <=> $this->x;
+    }
+
+    public function yMultiplier($y) {
+        return $y <=> $this->y;
+    }
+
     public function calcDistance($x, $y)
     {
+        // return $this->zeroY+($y <=> $this->y)*$y + ($this->zeroX+($x <=> $this->x)*$x);
         return (abs($x - $this->x) + abs($y - $this->y));
     }
 

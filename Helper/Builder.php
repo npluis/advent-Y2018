@@ -189,7 +189,7 @@ class Builder
 
     public function removeStep(BuildStep $step)
     {
-        echo "removing ".$step->getName()."\n";
+   //     echo "removing ".$step->getName()."\n";
         $this->done .= $step->getName();
         foreach ($this->allSteps as $otherStep) {
             $otherStep->removeStep($step);

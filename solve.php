@@ -31,7 +31,7 @@ if (!class_exists($class)) {
  *
  */
 
-$problem = new $class();
+$problem = new $class($day);
 $problem->run();
 
 $problem->printAnswers();

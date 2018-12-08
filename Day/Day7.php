@@ -94,7 +94,6 @@ class Day7 extends AbstractDayProblem
                 }
                 $worker->start(array_shift($steps), $time);
                 $this->builder->startWorker($worker);
-                echo 1;
             }
 
             //next worker free

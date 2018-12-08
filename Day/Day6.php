@@ -13,7 +13,7 @@ use Advent\Y2018\Helper\Coordinate;
 class Day6 extends AbstractDayProblem
 {
 
-    protected $day=6;
+    protected $day = 6;
     private $grid;
 
     /**
@@ -21,9 +21,9 @@ class Day6 extends AbstractDayProblem
      */
     private $coords = [];
 
-    private $safe=0;
+    private $safe = 0;
 
-    private $safeLimit=10000;
+    private $safeLimit = 10000;
 
     /**
      * @param int $safeLimit
@@ -34,7 +34,6 @@ class Day6 extends AbstractDayProblem
     }
 
 
-
     public function solve(array $input)
     {
 
@@ -43,7 +42,7 @@ class Day6 extends AbstractDayProblem
             $this->parseInput($input);
         }
 
-        $max=0;
+        $max = 0;
 
         foreach ($this->coords as $coordinate) {
             if ($coordinate->getNumClose() > $max) {
@@ -53,15 +52,8 @@ class Day6 extends AbstractDayProblem
                 $max = $coordinate->getNumClose();
             }
         }
-        return $max;
-    }
 
-    public function solve2(array $input)
-    {
-        if (!$this->coords) {
-            $this->parseInput($input);
-        }
-        return $this->safe;
+        return $max;
     }
 
     public function parseInput(array $input)
@@ -71,10 +63,12 @@ class Day6 extends AbstractDayProblem
         $minWidth = PHP_INT_MAX;
         $maxWidth = 0;
 
-        $baseDistances=[];
-
+        $xCoords = [];
+        $yCoords = [];
         foreach ($input as $num => $coord) {
             $coords = explode(",", $coord);
+            $x = $coords[0];
+            $y = $coords[1];
             $coordinate = new Coordinate($coords[0], $coords[1]);
             $this->coords[$coordinate->getCoord()] = $coordinate;
             $coordinate->setName(chr($num + 65));
@@ -85,15 +79,28 @@ class Day6 extends AbstractDayProblem
             $maxWidth = ($maxWidth > $coords[1]) ? $maxWidth : $coords[0];
 
             $closestCoords[$coordinate->getCoord()] = 0;
+
+            if (isset($xCoords[$x])) {
+                $xCoords[$x]++;
+            } else {
+                $xCoords[$x] = 1;
+            }
+            if (isset($yCoords[$x])) {
+                $yCoords[$y]++;
+            } else {
+                $yCoords[$y] = 1;
+            }
+
         }
 
 
-        for ($x = 0; $x <= $maxWidth; $x++) {
-            for ($y = 0; $y <= $maxHeight; $y++) {
+        for ($x = $minWidth; $x <= $maxWidth; $x++) {
+            for ($y = $minHeight; $y <= $maxHeight; $y++) {
                 $this->grid[$x.','.$y] = 0;
                 $distances = [];
                 $safe = 0;
                 foreach ($this->coords as $coord => $coordinate) {
+                    //  $distance = $coordYDist[$coord] + abs($coordinate->getX()-$x);
                     $distance = $coordinate->calcDistance($x, $y);
                     $distances[$distance][] = $coordinate;
                     $safe += $distance;
@@ -124,5 +131,14 @@ class Day6 extends AbstractDayProblem
                 }
             }
         }
+    }
+
+    public function solve2(array $input)
+    {
+        if (!$this->coords) {
+            $this->parseInput($input);
+        }
+
+        return $this->safe;
     }
 }
