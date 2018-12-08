@@ -11,8 +11,6 @@ namespace Advent\Y2018\Helper;
 class LicenseNode
 {
 
-    private static $nameInt = 65;
-    private $name = '';
     /**
      * @var int
      */
@@ -38,17 +36,9 @@ class LicenseNode
     {
         $this->numChilds = $numChilds;
         $this->numMeta = $numMeta;
-        $this->name = chr(self::$nameInt);
-        self::$nameInt++;
+        $this->metadata=new \SplFixedArray($numMeta);
     }
 
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
 
     public function addChild(LicenseNode $node)
     {
@@ -71,20 +61,10 @@ class LicenseNode
         return $this->children;
     }
 
-    public function addMetaData(int $data)
+    public function addMetaData(int $index, int $data)
     {
         $this->metaSum += $data;
-        $this->metadata[] = $data;
-    }
-
-    public function __toString()
-    {
-        $string = $this->name."({$this->getNumChilds()}, ".implode(',', $this->getMetadata()).")\n";
-        foreach ($this->children as $child) {
-            $string .= "  ".$child;
-        }
-
-        return $string;
+        $this->metadata[$index] = $data;
     }
 
     /**

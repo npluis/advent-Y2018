@@ -17,7 +17,18 @@ class Day8 extends AbstractDayProblem
      */
     private $nodes = [];
 
-    private $totalMeta=0;
+    private $totalMeta = 0;
+
+    /**
+     * @var \SplStack
+     */
+    private $nums;
+
+    public function __construct(int $day = null)
+    {
+        parent::__construct($day);
+    }
+
 
     public function solve(array $input)
     {
@@ -25,63 +36,61 @@ class Day8 extends AbstractDayProblem
             $this->parseInput($input);
         }
 
-        $sum =0;
+        $sum = 0;
         foreach ($this->nodes as $node) {
-            echo "root " . $node->getNumChilds() . ',' . $node->getNumMeta() . "\n";
             $sum += $node->getMetaSum();
         }
 
-        echo "SUM: $sum . count" . count($this->nodes);
         return $this->totalMeta;
     }
 
     public function parseInput(array $input)
     {
-        echo "parsing.....";
+        $this->nums = new \SplStack();
         $nums = explode(" ", trim($input[0]));
+        foreach ($nums as $num) {
+            $this->nums->push($num);
+        }
         do {
-            $node = $this->extractNode($nums);
-            $this->extractChild($node, $nums);
-            $this->extractMeta($node, $nums);
+            $node = $this->extractNode();
+            $this->extractChild($node);
+            $this->extractMeta($node);
             $this->nodes[] = $node;
-        } while (count($nums) > 0);
+        } while ($this->nums->count() > 0);
 
-     //   print_r($this->nodes);
+        //   print_r($this->nodes);
     }
 
-    private function extractNode(array &$nums)
+    private function extractNode()
     {
-
-        $numChilds = array_shift($nums);
-        $numMeta = array_shift($nums);
+        $numChilds = $this->nums->shift();
+        $numMeta = $this->nums->shift();
 
         $node = new LicenseNode($numChilds, $numMeta);
 
         return $node;
     }
 
-    private function extractChild(LicenseNode $parent, array &$nums)
+    private function extractChild(LicenseNode $parent)
     {
-      //  echo "childs: ".$parent->getNumChilds()."\n";
-        for ($i = 0; $i < $parent->getNumChilds(); $i++) {
-            $child = $this->extractNode($nums);
-
+        $numChilds = $parent->getNumChilds();
+        for ($i = 0; $i < $numChilds; $i++) {
+            $child = $this->extractNode();
             $parent->addChild($child);
             if ($child->getNumChilds() > 0) {
-                $this->extractChild($child, $nums);
+                $this->extractChild($child);
             }
-            $this->extractMeta($child, $nums);
+            $this->extractMeta($child);
         }
     }
 
-    private function extractMeta(LicenseNode $parent, array &$nums)
+    private function extractMeta(LicenseNode $parent)
     {
-      //  printf("meta for node with %d children and %d meta\n", $parent->getNumChilds(), $parent->getNumMeta());
-        for ($i = 0; $i < $parent->getNumMeta(); $i++) {
-            $meta = array_shift($nums);
-       //     echo "meta " . $meta ."\n";
-            $this->totalMeta+=$meta;
-            $parent->addMetaData($meta);
+        $numMeta = $parent->getNumMeta();
+        for ($i = 0; $i < $numMeta; $i++) {
+            $meta = $this->nums->shift();
+            $this->totalMeta += $meta;
+            $parent->addMetaData($i,$meta);
         }
     }
 
@@ -92,8 +101,7 @@ class Day8 extends AbstractDayProblem
         }
 
         $root = reset($this->nodes);
-        echo $root->getNumChilds() . "," . $root->getNumMeta() . "\n";
-        print_r($root->getMetadata());
+
         return $root->getRootValue();
     }
 }
