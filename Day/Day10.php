@@ -8,7 +8,9 @@
 
 namespace Advent\Y2018\Day;
 
+use Advent\Y2018\Helper\Letter;
 use Advent\Y2018\Helper\NavPoint;
+use Advent\Y2018\Helper\OCR;
 
 class Day10 extends AbstractDayProblem
 {
@@ -18,16 +20,16 @@ class Day10 extends AbstractDayProblem
      */
     private $grid = [];
 
-    private $maxX = 0;
-    private $maxY = 0;
+    private $solution = '';
 
     public function solve2(array $input)
     {
-        $this->solve($input);
+        //  $this->solve($input);
     }
 
     public function solve(array $input)
     {
+
 
         $this->parseInput($input);
 
@@ -43,7 +45,9 @@ class Day10 extends AbstractDayProblem
         $second = PHP_INT_MAX;
         for ($i = $max; $i <= $min; $i++) {
             $grid = $this->gridAtSecond($i);
+
             $closeness = $this->closeness($grid);
+
             if ($closest > $closeness) {
                 $closest = $closeness;
                 $second = $i;
@@ -51,20 +55,49 @@ class Day10 extends AbstractDayProblem
         }
 
 
+        $gridLines = $this->createGrid($second);
+        //see if we can find the letter width
+        $letterWidth = 0;
+        foreach ($gridLines as $line) {
+            //see if we can find a full line;
+            if (preg_match('/(#+)/', $line, $match)) {
+                $letterWidth = max($letterWidth, strlen($match[1]));
+            };
+        }
+        $letters=[];
+        $letterWidth += 2;//space between letters
+        foreach ($gridLines as $line) {
+            foreach (str_split(($line), $letterWidth) as $k => $letterLine) {
+                $letters[$k][] = str_pad(rtrim($letterLine), $letterWidth - 2, ' ');
+            }
+        }
+
+        foreach ($letters as $letter) {
+            $ocr = new OCR($letter);
+            $ocrResult = $ocr->recognise();
+            if (count($ocrResult) === 1) {
+                $this->solution .= $ocrResult[0];
+            } elseif (count($ocrResult) === 0) {
+                $this->solution .= '?';
+            } else {
+                $this->solution .= '['.implode('', $ocrResult).']';
+            }
+
+
+        }
+
         $this->printGrid($second);
-        echo "\n\n\n";
+        //   echo PHP_EOL.PHP_EOL.PHP_EOL;
+        echo PHP_EOL.PHP_EOL;
+        echo $this->solution;
     }
 
     public function parseInput(array $input)
     {
-
-
         foreach ($input as $line) {
             preg_match_all("/([\-]*\d+)/", $line, $matches);
             $navPoint = new NavPoint($matches[1][0], $matches[1][1], $matches[1][2], $matches[1][3]);
             $this->grid[] = $navPoint;
-
-
         }
     }
 
@@ -89,33 +122,55 @@ class Day10 extends AbstractDayProblem
         return count($grid);
     }
 
-    public function printGrid($second)
+    private function createGrid($second)
     {
-        $minX = 0;
-        $maxX = 0;
         $tempGrid = $this->gridAtSecond($second);
+
+        list($minX, $minY, $maxX, $maxY) = $this->gridSize($tempGrid);
+        $lineLength = $maxX - $minX;
+        $baseLine = str_repeat(' ', $lineLength);
+        $lines = [];
+
+        for ($y = $minY; $y <= $maxY; $y++) {
+            $line = $baseLine;
+            if (isset($tempGrid[$y])) {
+                foreach (array_keys($tempGrid[$y]) as $x) {
+                    $line[$x - $minX] = '#';
+                }
+            }
+
+            $lines[] = ($line);
+        }
+
+        return $lines;
+    }
+
+    private function gridSize(array $tempGrid)
+    {
+        $minX = PHP_INT_MAX;
+        $maxX = 0;
+
 
         foreach ($tempGrid as $line) {
             $coord = array_keys($line);
             $coord[] = $minX;
-            $coord[] = $maxX;
             $minX = min($coord);
+            array_pop($coord);
+            $coord[] = $maxX;
             $maxX = max($coord);
 
         }
         $maxY = max(array_keys($tempGrid));
+        $minY = min(array_keys($tempGrid));
 
-        $lineLength = $maxX - $minX;
-        $baseLine = str_repeat(' ', $lineLength);
-        echo "*****$second****\n";
-        for ($y = min(array_keys($tempGrid)); $y <= $maxY; $y++) {
-            $line = $baseLine;
-            if (isset($tempGrid[$y])) {
-                foreach (array_keys($tempGrid[$y]) as $x) {
-                    $line[$x] = '#';
-                }
-            }
-            echo "\t".trim($line)."\n";
+        return [$minX, $minY, $maxX, $maxY];
+    }
+
+    private function printGrid(int $second)
+    {
+        $grid = $this->createGrid($second);
+        foreach ($grid as $line) {
+            echo "\t".rtrim($line).PHP_EOL;
         }
     }
 }
