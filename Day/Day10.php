@@ -22,15 +22,15 @@ class Day10 extends AbstractDayProblem
 
     private $solution = '';
 
+    private $second=0;
+
     public function solve2(array $input)
     {
-        //  $this->solve($input);
+        return $this->second;
     }
 
     public function solve(array $input)
     {
-
-
         $this->parseInput($input);
 
         $min = PHP_INT_MAX;
@@ -86,10 +86,12 @@ class Day10 extends AbstractDayProblem
 
         }
 
+        $this->second=$second;
         $this->printGrid($second);
         //   echo PHP_EOL.PHP_EOL.PHP_EOL;
-        echo PHP_EOL.PHP_EOL;
-        echo $this->solution;
+        //echo PHP_EOL.PHP_EOL;
+        //echo $this->solution;
+        return $this->solution;
     }
 
     public function parseInput(array $input)
@@ -125,7 +127,6 @@ class Day10 extends AbstractDayProblem
     private function createGrid($second)
     {
         $tempGrid = $this->gridAtSecond($second);
-
         list($minX, $minY, $maxX, $maxY) = $this->gridSize($tempGrid);
         $lineLength = $maxX - $minX;
         $baseLine = str_repeat(' ', $lineLength);

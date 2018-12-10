@@ -89,14 +89,22 @@ class NavPoint
         //when will this one be in the range of 0-300
         $range = 400;
 
+        if (abs($this->x)<$range || abs($this->y)<$range) {
+            return [0,10];
+        }
+
         return [
             max(
-                ceil((abs($this->x) - $range) / abs($this->velocityX)),
-                (ceil((abs($this->y) - $range) / abs($this->veloctityY)))
+                $this->velocityX === 0 ? abs(abs($this->x) - $range) :
+                    ceil((abs($this->x) - $range) / abs($this->velocityX)),
+                $this->veloctityY === 0 ? abs(abs($this->y) - $range) :
+                    (ceil((abs($this->y) - $range) / abs($this->veloctityY)))
             ),
             min(
-                ceil((abs($this->x) + $range) / abs($this->velocityX)),
-                (ceil((abs($this->y) + $range) / abs($this->veloctityY)))
+                $this->velocityX === 0 ? abs(abs($this->x) + $range) :
+                    ceil((abs($this->x) + $range) / abs($this->velocityX)),
+                $this->veloctityY === 0 ? abs(abs($this->y) + $range) :
+                    (ceil((abs($this->y) + $range) / abs($this->veloctityY)))
             ),
         ];
     }
