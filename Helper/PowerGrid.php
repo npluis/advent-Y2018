@@ -50,6 +50,30 @@ class PowerGrid
     }
 
 
+    public function cacheGrid($minX, $width, $minY, $height)
+    {
+        $maxY = $minY + $height;
+        $maxX = $minX + $width;
+
+        for ($y = $minY; $y <= $maxY; $y++) {
+            $newValue = $this->getValueAtCoord(0, $y);
+            $this->grid[0][$y] = $newValue;
+            for ($x = $minX; $x <= $maxX; $x++) {
+                $newValue = $this->getValueAtCoord($x + 1, $y);
+                $this->grid[$x + 1][$y] = $newValue;
+            }
+        }
+    }
+
+    public function getValueAtCoord($x, $y)
+    {
+        $rackId = $x + 10;
+        $begin = (($rackId * $y) + $this->serial) * $rackId;
+        $hundreths = strlen($begin) < 3 ? 0 : (int)substr($begin, -3, 1);
+
+        return $hundreths - 5;
+    }
+
     public function createGrid($minX, $width, $minY, $height)
     {
 
@@ -57,14 +81,12 @@ class PowerGrid
         $maxY = $minY + $height;
         $maxX = $minX + $width;
 
+
         for ($y = $minY; $y <= $maxY; $y++) {
-            $newValue = $this->getValueAtCoord(0, $y);
-            $this->grid[0][$y] = $newValue;
             $rollingX = new \SplDoublyLinkedList();
 
             for ($x = $minX; $x <= $maxX; $x++) {
-                $newValue = $this->getValueAtCoord($x + 1, $y);
-                $this->grid[$x + 1][$y] = $newValue;
+                $newValue = $this->grid[$x + 1][$y];
                 $rollingX->push($newValue);
                 if (($x) - $minX >= ($square - 1)) {
                     // print_r($rollingX);
@@ -91,7 +113,7 @@ class PowerGrid
             for ($x = $minX; $x <= $maxX; $x++) {
                 $current = 0;
                 for ($i = 0; $i < $square; $i++) {
-                    $current += $this->rollingX[$x][$y + $i - 1];
+                    $current += $this->rollingX[$x][$y + $i - 1] ?? PHP_INT_MIN;
                 }
 
                 $this->sums[$x.','.$y] = $current;
@@ -109,14 +131,5 @@ class PowerGrid
         $topLeft = [$coord[0] - 1, $coord[1] - 1];
 
         return [$max, $topLeft, $coord];
-    }
-
-    public function getValueAtCoord($x, $y)
-    {
-        $rackId = $x + 10;
-        $begin = (($rackId * $y) + $this->serial) * $rackId;
-        $hundreths = strlen($begin) < 3 ? 0 : (int)substr($begin, -3, 1);
-
-        return $hundreths - 5;
     }
 }
