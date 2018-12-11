@@ -84,11 +84,14 @@ class PowerGrid
 
         for ($y = $minY; $y <= $maxY; $y++) {
             $rollingX = new \SplDoublyLinkedList();
-
+            $sizeReached=false;
             for ($x = $minX; $x <= $maxX; $x++) {
                 $newValue = $this->grid[$x + 1][$y];
                 $rollingX->push($newValue);
-                if (($x) - $minX >= ($square - 1)) {
+                if (!$sizeReached && (($x) - $minX >= ($square - 1))) {
+                    $sizeReached=true;
+                }
+                if ($sizeReached ) {
                     // print_r($rollingX);
                     $prevValue = $rollingX->shift();
                     $sum = $prevValue;
