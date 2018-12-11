@@ -16,32 +16,43 @@ class Day11 extends AbstractDayProblem
     {
 
         /**
-        -2  -4   4   4   4
-        -4   4   4   4  -5
-        4   3   3   4  -4
-        1   1   2   4  -3
-        -1   0   2  -5  -2
+         * -2  -4   4   4   4
+         * -4   4   4   4  -5
+         * 4   3   3   4  -4
+         * 1   1   2   4  -3
+         * -1   0   2  -5  -2
          */
 
 
-        $grid = new PowerGrid(42);
+        $grid = new PowerGrid(9221);
+        $grid->setSquare(3);
 
-        $answer = $grid->createGrid(0,300,0,300);
-        print_r($answer);
 
-     //   echo $grid->checkMaxSquare(0,300,0,300);
-        return;
-        $grid->rollingSum();
+        $answer = $grid->createGrid(0, 300, 0, 300);
+        return implode(',',$answer[1]);
+
+
     }
 
     public function solve2(array $input)
     {
-        // TODO: Implement solve2() method.
+        $max = PHP_INT_MIN;
+        for ($x = 0; $x < 100; $x++) {
+            $grid = new PowerGrid($input[0]);
+            $grid->setSquare($x);
+            $answer = $grid->createGrid(0, 300, 0, 300);
+            if ($answer[0] > $max) {
+                $max = $answer[0];
+            } else {
+                return implode(',', $answer[1]).','.$x;
+            }
+
+          //  echo "Grid: $x\t$answer[0]\t".implode(',', $answer[1])."\n";
+        }
     }
 
     public function parseInput(array $input)
     {
         // TODO: Implement parseInput() method.
     }
-
 }
