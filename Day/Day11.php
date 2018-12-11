@@ -15,15 +15,13 @@ class Day11 extends AbstractDayProblem
     public function solve(array $input)
     {
 
-        $grid = new PowerGrid(9221);
+        $grid = new PowerGrid($input[0]);
         $grid->setSquare(3);
         $grid->cacheGrid(0, 300, 0, 300);
 
         $answer = $grid->createGrid(0, 300, 0, 300);
 
         return implode(',', $answer[1]);
-
-
     }
 
     public function solve2(array $input)
@@ -31,16 +29,27 @@ class Day11 extends AbstractDayProblem
         $grid = new PowerGrid($input[0]);
         $grid->cacheGrid(0, 300, 0, 300);
         $max = PHP_INT_MIN;
+        $best = [];
+        $decline = 0;
+
         for ($x = 0; $x < 100; $x++) {
             $grid->setSquare($x);
             $answer = $grid->createGrid(0, 300, 0, 300);
             if ($answer[0] > $max) {
                 $max = $answer[0];
+                $answer[] = $x;
+                $best = $answer;
+                $decline = 0;
             } else {
-                return implode(',', $answer[1]).','.$x;
+                $decline++;
+
             }
 
-            //  echo "Grid: $x\t$answer[0]\t".implode(',', $answer[1])."\n";
+            if ($decline > 5) {
+                //result is 5 times in a row less than previous, assume this is the answer
+                return implode(',', $best[1]).','.$best[3];
+            }
+            echo "Grid: $x\t$answer[0]\t".implode(',', $answer[1])."\n";
         }
     }
 
