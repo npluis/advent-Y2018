@@ -9,7 +9,6 @@
 namespace Advent\Y2018\Day;
 
 use Advent\Y2018\Helper\Cart;
-use Advent\Y2018\Helper\ReversedQueue;
 
 class Day13 extends AbstractDayProblem
 {
@@ -22,6 +21,7 @@ class Day13 extends AbstractDayProblem
     private $carts = [];
     private $basePriority = 0;
 
+
     public function solve(array $input)
     {
         if (!$this->grid) {
@@ -29,7 +29,7 @@ class Day13 extends AbstractDayProblem
         }
 
 
-        $result= $this->runCarts(false);
+        $result = $this->runCarts(false);
 
         return $result;
     }
@@ -38,7 +38,7 @@ class Day13 extends AbstractDayProblem
     {
 
         //round to base 10
-        $this->basePriority = 10 ** ceil(log(count($input), 10));
+        $this->basePriority = -1 * (10 ** ceil(log(count($input), 10)));
         $this->carts = [];
         $this->grid = [];
         $y = 0;
@@ -74,37 +74,35 @@ class Day13 extends AbstractDayProblem
         }
     }
 
-    public function solve2(array $input)
-    {
-
-
-        $this->parseInput($input);
-
-
-        return $this->runCarts(true);
-    }
 
     private function runCarts($remove = false)
     {
 
         $collided = false;
         $positions = [];
+        $queue = new \SplPriorityQueue();
+
         foreach ($this->carts as $cartKey => $cart) {
             $positions[$cartKey] = $cart->getX().",".$cart->getY();
+            $cart->setName($cartKey);
+            $queue->insert($cart, $cart->getPriorty($this->basePriority));
         }
 
-        do {
-            uasort(
-                $this->carts,
-                function (Cart $a, Cart $b) {
-                    return ($a->getY() <=> $b->getY()) ?? ($a->getX() <=> $b->getX());
-                }
-            );
 
-            foreach ($this->carts as $cartKey => $cart) {
+
+        do {
+            $tempQueue = clone $queue;
+
+            while ($tempQueue->valid()) {
+
                 /**
                  * @var Cart $cart
                  */
+
+                $cart = $tempQueue->current();
+                $tempQueue->next();
+                $cartKey = $cart->getName();
+
                 if (!isset($positions[$cartKey])) {
                     //already crashed
                     continue;
@@ -115,9 +113,18 @@ class Day13 extends AbstractDayProblem
 
                 if (in_array($coord, $positions)) {
                     $collidingCart = array_search($coord, $positions);
+                    unset($this->carts[$cartKey], $this->carts[$collidingCart]);
+                    unset($positions[$cartKey], $positions[$collidingCart]);
                     if ($remove) {
-                        unset($this->carts[$cartKey], $this->carts[$collidingCart]);
-                        unset($positions[$cartKey], $positions[$collidingCart]);
+                        $queue = new \SplPriorityQueue();
+
+                        foreach ($this->carts as $cart) {
+                            $queue->insert($cart, $cart->getPriorty($this->basePriority));
+                        }
+
+                        if (count($this->carts) <= 1) {
+                            $collided = true;
+                        }
                     } else {
                         $collided = true;
                         break;
@@ -125,15 +132,23 @@ class Day13 extends AbstractDayProblem
                 } else {
                     $positions[$cartKey] = $coord;
                 }
-            }
 
-            if ($remove && count($this->carts) <= 1) {
-                $collided = true;
             }
 
 
         } while ($collided === false);
 
         return $coord;
+    }
+
+    public function solve2(array $input)
+    {
+
+        if (!$this->grid) {
+            $this->parseInput($input);
+        }
+
+
+        return $this->runCarts(true);
     }
 }
